@@ -5,7 +5,7 @@ const MODEL = "claude-haiku-5-5";
 const EFFORT_BY_TIER = { quick: "low", default: "medium" };
 const MAX_TURNS = 60;
 const MAX_INPUT_CHARS = 400_000;
-const MIN_OUTPUT_TOKENS = 256;
+const MIN_OUTPUT_TOKENS = 4_096;
 const MAX_OUTPUT_TOKENS = 16_000;
 
 function errorResponse(status, code, error) {
@@ -102,6 +102,9 @@ export async function POST(request) {
       max_tokens: parsed.maxTokens,
       system: parsed.system,
       messages: parsed.messages,
+      // Thinking spends the max_tokens budget before any text is written, which left
+      // short requests with no answer. Summaries and chat don't need it.
+      thinking: { type: "disabled" },
       output_config: { effort: parsed.effort },
     });
   } catch (err) {
@@ -118,5 +121,6 @@ export async function POST(request) {
   if (!text) {
     return errorResponse(502, "empty_response", `[ai/complete] No text returned (stop_reason: ${response.stop_reason})`);
   }
+  // A max_tokens stop with some text is returned as-is: a truncated answer beats an error.
   return Response.json({ text, stopReason: response.stop_reason });
 }
