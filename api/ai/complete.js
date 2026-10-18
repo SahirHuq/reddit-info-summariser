@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 
-const MODEL = "claude-opus-5-5";
+const MODEL = "claude-haiku-5-5";
 // The app sends tier "quick" for bulk summarising and "default" for chat and synthesis.
 const EFFORT_BY_TIER = { quick: "low", default: "medium" };
 const MAX_TURNS = 60;
@@ -97,14 +97,12 @@ export async function POST(request) {
   const client = new Anthropic({ apiKey });
   let response;
   try {
-    response = await client.beta.messages.create({
+    response = await client.messages.create({
       model: MODEL,
       max_tokens: parsed.maxTokens,
       system: parsed.system,
       messages: parsed.messages,
       output_config: { effort: parsed.effort },
-      betas: ["server-side-fallback-2026-07-01"],
-      fallbacks: "default",
     });
   } catch (err) {
     return apiErrorResponse(err);

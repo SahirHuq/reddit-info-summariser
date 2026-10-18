@@ -6,7 +6,7 @@ Chat with, summarise and connect your saved Reddit posts. This build runs on dem
 
 - `public/index.html`: the app (single compiled page)
 - `api/health.js`: tells the app which AI mode is on
-- `api/ai/complete.js`: forwards AI requests to Claude (`claude-opus-5-5`)
+- `api/ai/complete.js`: forwards AI requests to Claude (`claude-haiku-5-5`)
 
 ## AI key
 
